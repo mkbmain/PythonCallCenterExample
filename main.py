@@ -5,8 +5,18 @@ def start_point(name):
     lead = session.query(Lead).filter(Lead.agent_id != None).first()  # will just get the first one
     ext = session.query(Extension).first()
     ct = session.query(CommunicationType).all()  # this will get all
+
+    # nice complex join here get us communication log
+    # where the agent that did it last_name was smith
+    # and called 'HomePhone'
     cl = session.query(CommunicationLog).join(Agent).join(CommunicationType).filter(
-        CommunicationType.name == 'MobileSms').filter(Agent.last_name == 'Smith').first()
+        CommunicationType.name == 'HomePhone').filter(Agent.last_name == 'Smith').first()
+
+    # with this record we can then see the extension the agent used to make that call from CommunicationLog
+    ext = cl.agent.extension.extension
+    print(
+        F"{cl.lead.first_name} {cl.lead.last_name} was called on there home phone {cl.lead.home_phone} on {cl.started_at}" +
+        F"\nby {cl.agent.first_name} {cl.agent.last_name} on extension {ext}")
 
     result = session.query(Agent).filter(Agent.extension_id == 39)  # builds a query
     for row in result:  ## will iterate through a open connection
