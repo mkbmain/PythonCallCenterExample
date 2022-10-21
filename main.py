@@ -2,15 +2,19 @@ from SqlModels import callcenter_session as session, CommunicationLog, Communica
 
 
 def start_point(name):
-    lead = session.query(Lead).filter(Lead.agent_id != None).first()  # will just get the first one
+    lead_query = session.query(Lead).filter(Lead.agent_id != None)  # query
+    lead = lead_query.first()  # will just get the first one but this will execute the query
     ext = session.query(Extension).first()
     ct = session.query(CommunicationType).all()  # this will get all
 
     # nice complex join here get us communication log
     # where the agent that did it last_name was smith
     # and called 'HomePhone'
-    cl = session.query(CommunicationLog).join(Agent).join(CommunicationType).filter(
-        CommunicationType.name == 'HomePhone').filter(Agent.last_name == 'Smith').first()
+    cl = session.query(CommunicationLog). \
+        join(Agent). \
+        join(CommunicationType). \
+        filter(CommunicationType.name == 'HomePhone'). \
+        filter(Agent.last_name == 'Smith').first()
 
     # with this record we can then see the extension the agent used to make that call from CommunicationLog
     ext = cl.agent.extension.extension
