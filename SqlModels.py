@@ -27,17 +27,17 @@ class Agent(Base):
 
 
 class CommunicationType(Base):
-    __tablename__ = 'communicationtype'
+    __tablename__ = 'communication_types'
     id = Column(Integer, primary_key=True)
     name = Column(String)
     communication_logs = relationship('CommunicationLog', lazy='select', back_populates="communication_type")
 
 
 class CommunicationLog(Base):
-    __tablename__ = 'communicationlog'
+    __tablename__ = 'communication_logs'
     id = Column(Integer, primary_key=True)
     lead_id = Column(Integer, ForeignKey("leads.id"), name='leadid')
-    communication_type_id = Column(Integer, ForeignKey("communicationtype.id"), name="communicationtypeid")
+    communication_type_id = Column(Integer, ForeignKey("communication_types.id"), name="communicationtypeid")
     agent_id = Column(Integer, ForeignKey("agents.id"), name="agentid")
     started_at = Column(DateTime, name="startedat")
     ended_at = Column(DateTime, name="endedat")
