@@ -7,6 +7,7 @@ def start_point(name):
     ct = session.query(CommunicationType).all()  # this will get all
     cl = session.query(CommunicationLog).join(Agent).join(CommunicationType).filter(
         CommunicationType.name == 'MobileSms').filter(Agent.last_name == 'Smith').first()
+
     result = session.query(Agent).filter(Agent.extension_id == 39)  # builds a query
     for row in result:  ## will iterate through a open connection
         print("ID:", row.id, F"Name: {row.first_name} - {row.last_name}", "extensionid:", row.extension_id)

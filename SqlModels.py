@@ -8,7 +8,7 @@ Base = declarative_base(metadata=meta)
 Session = sessionmaker(bind=engine)
 callcenter_session = Session()
 
-meta.create_all(engine)
+#meta.create_all(engine)
 
 
 class Agent(Base):
