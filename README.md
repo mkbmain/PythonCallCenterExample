@@ -2,7 +2,7 @@
 
 
 ## Sample project
-This is just a example of using SqlAlchemy
+This is just a example of using SqlAlchemy with declarative_base
 
 you will need 
 ```
