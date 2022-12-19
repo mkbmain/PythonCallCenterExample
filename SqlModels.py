@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, MetaData, ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, MetaData, ForeignKey,func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 
@@ -8,8 +8,6 @@ meta = MetaData(schema='dbo')
 Base = declarative_base(metadata=meta)
 Session = sessionmaker(bind=engine)
 callcenter_session = Session()
-
-
 # meta.create_all(engine)
 
 
