@@ -21,8 +21,18 @@ def start_point():
     part1 = session.query(Agent).order_by(Agent.start_date).first()
     part2 = session.query(CommunicationLog).order_by(CommunicationLog.started_at).first()
     part3 = session.query(Extension).outerjoin(Agent).filter(Agent.id == None).all()
-    part4 = session.query(Agent.extension_id, func.count(Agent.extension_id)).group_by(Agent.extension_id).order_by(
-        func.count(Agent.extension_id).desc()).first()
+    part4 = session.query(Agent.extension_id, func.count(Agent.extension_id)). \
+        group_by(Agent.extension_id). \
+        order_by(func.count(Agent.extension_id).desc()). \
+        first()
+
+    part5_performant = session.query(CommunicationLog.started_at, CommunicationLog.ended_at, CommunicationType.name,
+                                     Lead.first_name, Lead.last_name). \
+        join(CommunicationType, CommunicationLog.communication_type_id == CommunicationType.id). \
+        join(Lead, CommunicationLog.lead_id == Lead.id). \
+        filter(CommunicationType.name == 'Email'). \
+        order_by(CommunicationLog.started_at). \
+        first()
 
     part5 = session.query(CommunicationLog). \
         join(CommunicationType). \
@@ -40,25 +50,17 @@ def start_point():
         part5.ended_at
     }
 
-    part5_performant = session.query(CommunicationLog.started_at, CommunicationLog.ended_at, CommunicationType.name,
-                                     Lead.first_name, Lead.last_name). \
-        join(CommunicationType, CommunicationLog.communication_type_id == CommunicationType.id). \
-        join(Lead, CommunicationLog.lead_id == Lead.id). \
-        filter(CommunicationType.name == 'Email'). \
-        order_by(CommunicationLog.started_at). \
-        first()
-
-    part6 = session.query(Lead.removed_at,Agent.first_name, Agent.last_name,CommunicationLog.started_at) \
+    part6 = session.query(Lead.removed_at, Agent.first_name, Agent.last_name, CommunicationLog.started_at) \
         .filter(Lead.removed_at != None). \
         join(CommunicationLog, Lead.id == CommunicationLog.lead_id). \
         filter(CommunicationLog.started_at > Lead.removed_at). \
-        join(Agent, Agent.id== CommunicationLog.agent_id). \
+        join(Agent, Agent.id == CommunicationLog.agent_id). \
         all()
 
-    part7 = session.query(Agent.id,Agent.first_name,Agent.last_name,func.count(Agent.id)).\
-        join(Lead,Lead.agent_id == Agent.id).\
-        filter(Lead.removed_at != None).\
-        group_by(Agent.id).\
+    part7 = session.query(Agent.id, Agent.first_name, Agent.last_name, func.count(Agent.id)). \
+        join(Lead, Lead.agent_id == Agent.id). \
+        filter(Lead.removed_at != None). \
+        group_by(Agent.id). \
         order_by(func.count(Agent.id).desc()).all()
 
     # with this record we can then see the extension the agent used to make that call from CommunicationLog
